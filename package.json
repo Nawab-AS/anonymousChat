@@ -1,0 +1,20 @@
+{
+    "name": "anonymouschat",
+    "version": "1.0.0",
+    "description": "A simple Omegle style anonymous chat web app",
+    "main": "index.js",
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    },
+    "scripts": {
+        "dev": "nodemon index.js",
+        "start": "node index.js"
+    },
+    "author": "Nawab-AS",
+    "license": "MIT",
+    "dependencies": {
+        "body-parser": "^2.2.0",
+        "express": "^5.1.0",
+        "socket.io": "^4.8.1"
+    }
+}
