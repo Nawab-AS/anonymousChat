@@ -18,5 +18,10 @@
 </head>
 <body>
     <h1>Anonymous Chat Room</h1>
+    <h2>Hello, {{ nickname }}</h2>
+    <h3>Connected Users:</h3>
+    <ul>
+        <li v-for="user in users" :key="user">{{ user }}</li>
+    </ul>
 </body>
 </html>

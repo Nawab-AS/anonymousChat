@@ -15,6 +15,7 @@
     <br />
 
     <form @submit.prevent="join">
+        <p><%= error %></p>
         <input v-model="nickname" type="text" placeholder="Nickname" name="nickname" required maxlength="20"/>
         <br /><br />
         <button type="submit">Join<span v-if="joining != 0">ing{{ dots }}</span></button>
