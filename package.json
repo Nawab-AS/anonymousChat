@@ -7,13 +7,14 @@
         "nodemon": "^3.1.10"
     },
     "scripts": {
-        "dev": "nodemon index.js",
+        "dev": "nodemon server/index.js --ignore public/",
         "start": "node index.js"
     },
     "author": "Nawab-AS",
     "license": "MIT",
     "dependencies": {
         "body-parser": "^2.2.0",
+        "ejs": "^3.1.10",
         "express": "^5.1.0",
         "socket.io": "^4.8.1"
     }

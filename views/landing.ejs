@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Chat</title>
+    <link rel="stylesheet" href="/landing/styles.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/profanity-cleaner@latest"></script>
+
+    <script src="/landing/index.js" defer></script>
+</head>
+<body>
+    <h1>Welcome to Anonymous Chat</h1>
+    <br />
+
+    <form @submit.prevent="join">
+        <input v-model="nickname" type="text" placeholder="Nickname" name="nickname" required maxlength="20"/>
+        <br /><br />
+        <button type="submit">Join<span v-if="joining != 0">ing{{ dots }}</span></button>
+    </form>
+    <br /><br /><br /><br />
+</body>
+</html>
