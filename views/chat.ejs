@@ -12,16 +12,65 @@
     <script>
         // ejs
         const nickname = "<%= nickname %>";
+        // if (!localStorage.getItem('privateKey')) {
+        //     localStorage.setItem('privateKey', "<%= privateKey %>");
+        // }
+        // const privateKey = BigInt(localStorage.getItem('privateKey'));
+        const privateKey = BigInt("<%= privateKey %>");
     </script>
 
     <script src="/chat/index.js" defer></script>
 </head>
 <body>
-    <h1>Anonymous Chat Room</h1>
-    <h2>Hello, {{ nickname }}</h2>
-    <h3>Connected Users:</h3>
-    <ul>
-        <li v-for="user in users" :key="user">{{ user }}</li>
-    </ul>
+    <header>
+        <h1>Anonymous Chat</h1>
+        <h1>Welcome, <a id="nickname" href="/" title="Click to change your nickname">{{ nickname }}</a></h1>
+    </header>
+
+    <main>
+        <div id="user_list">
+            <h3>Connected Users</h3>
+            <ul>
+                <li v-for="user in users" :key="user" @click="selectUser(user)">{{ user }}</li>
+            </ul>
+        </div>
+        <div id="chat">
+            <h1 id="recipient">{{ recipient || 'Select a user to chat with' }}</h1>
+            <div id="messages">
+                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
+                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
+                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
+                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
+                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
+                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
+                <p>Hello!</p>
+                <p byMe>World!</p>
+                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
+                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
+                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
+                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
+                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
+                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
+                <p>Hello!</p>
+                <p byMe>World!</p>
+                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
+                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
+                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
+                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
+                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
+                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
+                <p>Hello!</p>
+                <p byMe>World!</p>
+                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
+                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
+                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
+                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
+                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
+                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
+                <p>Hello!</p>
+                <p byMe>World!</p>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

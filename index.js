@@ -3,6 +3,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
 import { join as joinPath } from 'path';
+import { randomBytes } from 'crypto';
 
 const app = express();
 const server = http.createServer(app);
@@ -51,14 +52,20 @@ app.get('/', (req, res) => {
     res.render('landing', { error: '' || req.query.error });
 });
 
-app.get('/chat', async (req, res) => {
-    await new Promise(resolve => setTimeout(resolve, 100)); // stop race conditions
-    console.log(connectedUsers)
+
+const userPrivateKeys = new Map(); // stores private keys for nicknames (saved on the server for consistancy during the session)
+app.get('/chat', (req, res) => {
     const { nickname } = req.query;
     if (!nickname || nickname.length < 5 || nickname.length > 20 || !nicknameRegex.test(nickname)) {
         return res.redirect('/');
     }
-    res.render('chat', { nickname });
+
+    if (!userPrivateKeys.has(nickname)) {
+        userPrivateKeys.set(nickname, BigInt('0x' + randomBytes(16).toString('hex')).toString());
+    }
+
+    const privateKey = userPrivateKeys.get(nickname);
+    res.render('chat', { nickname, privateKey });
 });
 
 app.use(function (req, res) {

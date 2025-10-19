@@ -2,6 +2,7 @@
     "name": "anonymouschat",
     "version": "1.0.0",
     "description": "A simple Omegle style anonymous chat web app",
+    "type": "module",
     "main": "index.js",
     "devDependencies": {
         "nodemon": "^3.1.10"
