@@ -1,5 +1,4 @@
 // ECC (Elliptic Curve Cryptography) implementation
-// this code was NOT created by AI
 
 
 class ECC {
@@ -152,5 +151,22 @@ class ECC {
         result.set(iv);
         result.set(new Uint8Array(ciphertext), iv.length);
         return result;  
+    }
+
+
+    async decryptMessage(encryptedMessage, name) {
+        const sharedKey = this.#keyRing.get(name);
+        if (!sharedKey) throw new Error("Shared key not found");
+
+        const iv = encryptedMessage.slice(0, 12);
+        const ciphertext = encryptedMessage.slice(12);
+
+        const decrypted = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv },
+            sharedKey,
+            ciphertext
+        );
+
+        return new TextDecoder().decode(decrypted);
     }
 }

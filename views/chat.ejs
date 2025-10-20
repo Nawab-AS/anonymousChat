@@ -17,6 +17,17 @@
         // }
         // const privateKey = BigInt(localStorage.getItem('privateKey'));
         const privateKey = BigInt("<%= privateKey %>");
+        const rawCurveParams = JSON.parse(decodeURIComponent("<%= curveParams %>"));
+        const curveParams = {
+            p: BigInt(rawCurveParams.p.slice(0, -1)),
+            a: BigInt(rawCurveParams.a.slice(0, -1)),
+            b: BigInt(rawCurveParams.b.slice(0, -1)),
+            G: {
+                x: BigInt(rawCurveParams.G.x.slice(0, -1)),
+                y: BigInt(rawCurveParams.G.y.slice(0, -1))
+            },
+            n: BigInt(rawCurveParams.n.slice(0, -1))
+        };
     </script>
 
     <script src="/chat/ECC.js"></script>
