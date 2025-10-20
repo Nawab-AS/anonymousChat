@@ -68,12 +68,22 @@ header h1 #nickname {
 /*********** chat area ***********/
 
 #chat {
-    overflow-y: auto;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
 }
 
+#chat #recipient {
+    text-align: center;
+    border-bottom: #00da24 2px solid;
+    padding: 10px;
+    font-size: 1.5em;
+    margin: 0;
+    padding: 10px;
+}
+
 #chat #messages {
+    overflow-y: auto;
     padding: 20px;
 }
 
@@ -88,14 +98,14 @@ header h1 #nickname {
     overflow-wrap: break-word;
 }
 
-#chat #messages p[byMe] {
+#chat #messages p[byMe='true'] {
     margin-right: 100px;
     margin-left: 0px;
     border: #0024da 1px solid;
     text-align: left;
 }
 
-#chat #messages p:not([byMe]) {
+#chat #messages p[byMe='false'] {
     margin-right: 0px;
     margin-left: 100px;
     border: #00da24 1px solid;
@@ -105,10 +115,10 @@ header h1 #nickname {
 
 /*********** chat area scrollbar ***********/
 
-#chat::-webkit-scrollbar { width: 8px; }
+#chat #messages::-webkit-scrollbar { width: 8px; }
 
-#chat::-webkit-scrollbar-track { background: #2e2e2e; }
+#chat #messages::-webkit-scrollbar-track { background: #2e2e2e; }
 
-#chat::-webkit-scrollbar-thumb { background: #005323; border-radius: 10px; }
+#chat #messages::-webkit-scrollbar-thumb { background: #005323; border-radius: 10px; }
 
-#chat::-webkit-scrollbar-thumb:hover { background: #006329; }
+#chat #messages::-webkit-scrollbar-thumb:hover { background: #006329; }

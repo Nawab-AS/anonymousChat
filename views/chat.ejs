@@ -19,6 +19,7 @@
         const privateKey = BigInt("<%= privateKey %>");
     </script>
 
+    <script src="/chat/ECC.js"></script>
     <script src="/chat/index.js" defer></script>
 </head>
 <body>
@@ -31,44 +32,20 @@
         <div id="user_list">
             <h3>Connected Users</h3>
             <ul>
-                <li v-for="user in users" :key="user" @click="selectUser(user)">{{ user }}</li>
+                <li v-for="user in users" :key="user" @click="recipient = user">{{ user }}</li>
             </ul>
         </div>
         <div id="chat">
             <h1 id="recipient">{{ recipient || 'Select a user to chat with' }}</h1>
             <div id="messages">
-                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
-                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
-                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
-                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
-                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
-                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
-                <p>Hello!</p>
-                <p byMe>World!</p>
-                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
-                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
-                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
-                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
-                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
-                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
-                <p>Hello!</p>
-                <p byMe>World!</p>
-                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
-                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
-                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
-                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
-                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
-                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
-                <p>Hello!</p>
-                <p byMe>World!</p>
-                <p>Hey there! It's been a while since we last talked. How have you been doing these days?</p>
-                <p byMe>I've been doing well, just keeping busy with work and some personal projects. How about you?</p>
-                <p>I'm doing great, thanks for asking! I've been spending a lot of time learning new skills and exploring new hobbies.</p>
-                <p byMe>That sounds amazing! What kind of hobbies have you been exploring recently? Anything particularly exciting or challenging?</p>
-                <p>I've been trying my hand at painting and it's been both challenging and rewarding. It's a great way to relax.</p>
-                <p byMe>That sounds wonderful! I've always wanted to try painting but never got around to it. Maybe I should give it a shot.</p>
-                <p>Hello!</p>
-                <p byMe>World!</p>
+                <div v-for="message in messages" :key="message.text">
+                    <p :byMe="message.sender != recipient" v-if="message.from == recipient || message.to == nickname">{{ message.text }}</p>
+                </div>
+            </div>
+
+            <div id="message_box">
+                <input type="text" id="message_input" placeholder="Type your message here..." v-model="newMessage" @keyup.enter="sendMessage" :disabled="!recipient">
+                <button id="send_button" @click="sendMessage" :disabled="!recipient || newMessage.trim() == ''">Send</button>
             </div>
         </div>
     </main>
