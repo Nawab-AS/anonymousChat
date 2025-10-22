@@ -9,7 +9,7 @@ All other files are handmade (~90%)
 
 ## Live Demo
 
-Live demo coming soon...
+Live demo available [here](https://seige-anonymous-chat-9a876f0fd2ae.herokuapp.com). It might take some time for the demo to startup because of heroku eco dynos.
 
 
 ## Installation 
