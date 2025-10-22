@@ -1,6 +1,7 @@
 # Anonymous Chat
 
 An omegle style anonymous chat app that uses a PoC ECC key transfer.
+All messages are end-to-end encrypted using my own implementation of ECDH (Elliptic Curve Diffie-Hellman) for key transfer and AES-128 (Advanced Encrypted Standard with 128-bit keys).
 
 **Acknowledgement**: /public/chat/ecc.js was partially created with the help of AI.
 All other files are handmade (~90%)
@@ -36,6 +37,15 @@ curveParams=<curve params>
 ```
 Before changeing the curve params, please read how to change the ECC curve [here](#Changing-the-ECC-curve)
 
+
+## Screenshots
+
+### Initialize handshake
+
+![initialize_handshake.png](https://github.com/user-attachments/assets/fe653c11-d3ab-4c2c-bfd9-e9c29f04022d)
+
+### Users chatting
+![users_chating.png](https://github.com/user-attachments/assets/5d4a5d11-a4c3-4ae4-aa98-b2de1c246b31)
 
 ## Changing the ECC curve
 
