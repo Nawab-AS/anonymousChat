@@ -36,7 +36,7 @@ socket.on('request', async (data) => {
         
         // TODO(in the future): add allow handshake request modal before accepting handshake
 
-        if (!ecc.deriveSharedSecret(data.publicKey, data.to)) return; // could not derive shared key
+        if (!ecc.deriveSharedSecret(data.publicKey, data.from)) return; // could not derive shared key
         socket.emit('request', { type: 'HandshakeAccepted', publicKey: ecc.getPublicKey(), to: data.from, from: nickname });
         handshaking.push(data.from);
     }
@@ -45,7 +45,7 @@ socket.on('request', async (data) => {
         if (!data.to || !data.from || !data.publicKey) return; // inseficient handshake data
         if (data.to != nickname || !users.value.includes(data.from) || !handshaking.includes(data.from)) return; // invalid handshake data/not for me
 
-        if (!ecc.deriveSharedSecret(data.publicKey, data.to)) return;
+        if (!ecc.deriveSharedSecret(data.publicKey, data.from)) return;
         handshaked.value.push(data.from);
         handshaking = handshaking.filter(user => user != data.from); // remove from handshaking list
         console.log('Handshake established with:', data.from);
@@ -74,8 +74,8 @@ function initializeHandshake() {
 // UI
 
 function sendMessage() {
-    if (newMessage.value.trim() === '' || !recipient.value) return;
-    socket.emit('message', { to: recipient.value, msg: newMessage.value.trim() });
+    if (newMessage.value.trim() === '' || !recipient.value || !handshaked.value.includes(recipient.value)) return;
+    socket.emit('request', { to: recipient.value, msg: newMessage.value.trim() });
     newMessage.value = '';
     messages.value.push({ sender: nickname, text: newMessage.value.trim() });
 }

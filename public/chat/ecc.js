@@ -53,20 +53,19 @@ class ECC {
             if (P1.y === 0n) return this.POINT_AT_INFINITY; // tangent is vertical, hence slope is infinite
 
             // slope of tangent = (3x^2 + a) / (2y) mod p
-            numerator = (3n * P1.x ** 2n + this.curveParams.a);
-            denominator = (2n * P1.y);
+            numerator = (3n * P1.x ** 2n + this.curveParams.a) % this.curveParams.p;
+            denominator = (2n * P1.y) % this.curveParams.p;
 
 
         } else { // Point addition (P1 + P2)
             if (P1.x == P2.x) return this.POINT_AT_INFINITY; // change in x = 0, hence slope is infinite
 
             // slope of a simple line: (P2.y - P1.y) / (P2.x - P1.x) mod p
-            numerator = P2.y - P1.y;
-            denominator = P2.x - P1.x;
+            numerator = ((P2.y - P1.y) % this.curveParams.p + this.curveParams.p) % this.curveParams.p;
+            denominator = ((P2.x - P1.x) % this.curveParams.p + this.curveParams.p) % this.curveParams.p;
         }
 
-        slope = numerator * this.#modInverse(denominator, this.curveParams.p);
-        slope = (slope + this.curveParams.p) % this.curveParams.p; // ensure slope is positive
+        slope = (numerator * this.#modInverse(denominator, this.curveParams.p)) % this.curveParams.p;
 
 
         // calculate resultant point R (P1 + P2)
@@ -135,6 +134,7 @@ class ECC {
             return false
         }
         this.#saveAESKey(name, sharedKey);
+        console.log("Derived shared secret with", name, ":", sharedKey);
         return true;
     }
 
