@@ -1,5 +1,5 @@
-// ECC (Elliptic Curve Cryptography) implementation
-// partially made with the help of AI
+// ECDH (Elliptic-Curve Diffie-Hellman) + AES-GCM implementation
+// the ECDH part was partially made with the help of AI
 
 
 class ECC {
@@ -151,7 +151,7 @@ class ECC {
             encodedText
         );
 
-        console.log("encrypted message:", encryptedBuffer, "\n\niv:", iv);
+        //console.log("encrypted message:", encryptedBuffer, "\n\niv:", iv);
         return { buffer: encryptedBuffer, iv };
     }
 

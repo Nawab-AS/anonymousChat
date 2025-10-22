@@ -20,16 +20,22 @@ socket.on('users', (data) => {
 });
 
 // Listen for incoming messages
-msg = {}; // testing
 socket.on('request', async (data) => {
-    console.log('Received request:', data);
-    msg = data;
+    //console.log('Received request:', data);
     if (typeof data != 'object' || !data.type) return;
-    if (data.sender && data.text){
-        // TODO: validate/decrypt
-        messages.value.push({ sender: data.sender, text: data.text });
+
+    // handle incoming messages
+    if (data.type === 'message'){
+        if (!data.from || !data.to || !data.text) return; // invalid message
+        if (data.to !== nickname || !handshaked.value.includes(data.from)) return; // not for me/handshake not established
+
+        const message = await ecc.decryptMessage(data.text, data.from);
+        if (message.status != "OK") return; // decryption error
+        messages.value.push({ from: data.from, to: data.to, text: message.decryptedText });
     }
 
+
+    // register handshake requests
     if (data.type == 'RequestHandshake') {
         if (!data.to || !data.from || !data.publicKey) return; // inseficient handshake data
         if (data.to != nickname || !users.value.includes(data.from)) return; // invalid handshake data/not for me
@@ -46,9 +52,11 @@ socket.on('request', async (data) => {
         if (data.to != nickname || !users.value.includes(data.from) || !handshaking.includes(data.from)) return; // invalid handshake data/not for me
 
         if (!ecc.deriveSharedSecret(data.publicKey, data.from)) return;
-        handshaked.value.push(data.from);
-        handshaking = handshaking.filter(user => user != data.from); // remove from handshaking list
-        console.log('Handshake established with:', data.from);
+        setTimeout(() => { // intentional delay for more appealing UI
+            handshaked.value.push(data.from);
+            handshaking = handshaking.filter(user => user != data.from); // remove from handshaking list
+            console.log('Handshake established with:', data.from);
+        }, 750);
         socket.emit('request', { type: 'HandshakeComplete', to: data.from, from: nickname });
     }
 
@@ -56,9 +64,11 @@ socket.on('request', async (data) => {
         if (!data.to || !data.from) return; // inseficient handshake data
         if (data.to != nickname || !handshaking.includes(data.from)) return; // invalid handshake data/not for me
 
-        handshaked.value.push(data.from);
-        handshaking = handshaking.filter(user => user != data.from); // remove from handshaking list
-        console.log('Handshake completed with:', data.from);
+        setTimeout(() => { // intentional delay for more appealing UI
+            handshaked.value.push(data.from);
+            handshaking = handshaking.filter(user => user != data.from); // remove from handshaking list
+            console.log('Handshake completed with:', data.from);
+        }, 750);
     }
 });
 
@@ -71,13 +81,13 @@ function initializeHandshake() {
 }
 
 
-// UI
-
-function sendMessage() {
-    if (newMessage.value.trim() === '' || !recipient.value || !handshaked.value.includes(recipient.value)) return;
-    socket.emit('request', { to: recipient.value, msg: newMessage.value.trim() });
+// Send Message
+async function sendMessage() {
+    if (newMessage.value.trim() == '' || !recipient.value || !handshaked.value.includes(recipient.value)) return;
+    const message = { type: 'message', to: recipient.value, from: nickname, text: newMessage.value.trim() };
+    socket.emit('request', { type: 'message', to: message.to, from: message.from, text: await ecc.encryptMessage(message.text, recipient.value) });
     newMessage.value = '';
-    messages.value.push({ sender: nickname, text: newMessage.value.trim() });
+    messages.value.push(message);
 }
 
 // mount Vue

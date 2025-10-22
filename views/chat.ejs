@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anonymous Chat</title>
     <link rel="stylesheet" href="/chat/styles.css">
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/profanity-cleaner@latest"></script>
 
@@ -50,13 +50,13 @@
         <div id="chat">
             <h1 id="recipient" v-if="recipient">{{ recipient }}</h1>
             <h1 id="recipient" v-else style="color:#e90000;">Select a user to chat with</h1>
-            <div id="messages">
-                <button v-if="recipient && !handshaked.includes(recipient)" @click="initializeHandshake()" id="initHandshake">Initialize handshake</button>
-                <div v-else-if="(messages.filter(msg => (msg.from == recipient || msg.to == nickname) || msg.to == recipient).length == 0) && recipient">
+            <div id="messages" v-if="recipient">
+                <button v-if="!handshaked.includes(recipient)" @click="initializeHandshake()" id="initHandshake">Initialize handshake</button>
+                <div v-else-if="messages.filter(msg => (msg.from == recipient || msg.to == recipient)).length == 0">
                     <p style="text-align: center;">No messages yet.</p>
                 </div>
-                <div v-for="message in messages" :key="message.text" v-if="recipient">
-                    <p :byMe="message.sender != recipient" v-if="message.from == recipient || message.to == nickname">{{ message.text }}</p>
+                <div v-for="message in messages" :key="message.text" v-else>
+                    <p :byMe="message.from == nickname" v-if="message.to == recipient || message.from == recipient">{{ message.text }}</p>
                 </div>
             </div>
 
