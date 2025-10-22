@@ -36,7 +36,6 @@ const validNickname = computed(() => {
 
 
 
-
 // mount Vue
 const app = createApp({
     setup() {
@@ -45,6 +44,7 @@ const app = createApp({
             join,
             dots,
             joining,
+            webCryptoAllowed: (typeof window.crypto.subtle != 'undefined'),
         };
     }
 });

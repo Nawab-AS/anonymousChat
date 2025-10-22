@@ -63,6 +63,7 @@ header h1 #nickname {
     padding: 5px;
     margin-bottom: 5px;
     border-radius: 7px;
+    cursor: pointer;
 }
 
 /*********** chat area ***********/
@@ -80,11 +81,25 @@ header h1 #nickname {
     font-size: 1.5em;
     margin: 0;
     padding: 10px;
+    flex-grow: 0;
+}
+
+#chat button#initHandshake {
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 7px;
+    background-color: #00da24;
+    color: white;
+    cursor: pointer;
 }
 
 #chat #messages {
     overflow-y: auto;
     padding: 20px;
+    flex-grow: 1;
 }
 
 #chat #messages p {
@@ -111,6 +126,37 @@ header h1 #nickname {
     border: #00da24 1px solid;
     text-align: right;
 }
+
+
+#chat #message_box {
+    display: flex;
+    padding: 10px;
+    border-top: #00da24 2px solid;
+    flex-grow: 0;
+}
+
+#chat #message_box input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1em;
+    border: #00da24 2px solid;
+    border-radius: 7px;
+    outline: none;
+    background-color: #2b2b2b;
+    color: #00da24;
+    margin-right: 10px;
+}
+
+#chat #message_box button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 7px;
+    background-color: #00da24;
+    color: white;
+    cursor: pointer;
+}
+
 
 
 /*********** chat area scrollbar ***********/

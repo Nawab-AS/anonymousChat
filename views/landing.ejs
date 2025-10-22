@@ -16,6 +16,7 @@
 
     <form @submit.prevent="join">
         <p><%= error %></p>
+        <p v-if="!webCryptoAllowed">your browser doesn't support the required webCryptoAPI</p>
         <input v-model="nickname" type="text" placeholder="Nickname" name="nickname" required maxlength="20"/>
         <br /><br />
         <button type="submit">Join<span v-if="joining != 0">ing{{ dots }}</span></button>

@@ -44,8 +44,8 @@ io.on('connection', (socket) => {
     connectedUsers.push(socket.nickname);
     io.emit('users', connectedUsers);
 
-    socket.on('message', (msg) => {
-        socket.broadcast.emit('message', { nickname: socket.nickname, msg });
+    socket.on('request', (msg) => {
+        socket.broadcast.emit('request', msg);
     });
 
     socket.on('disconnect', () => {

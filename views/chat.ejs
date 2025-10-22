@@ -30,7 +30,7 @@
         };
     </script>
 
-    <script src="/chat/ECC.js"></script>
+    <script src="/chat/ecc.js"></script>
     <script src="/chat/index.js" defer></script>
 </head>
 <body>
@@ -44,17 +44,23 @@
             <h3>Connected Users</h3>
             <ul>
                 <li v-for="user in users" :key="user" @click="recipient = user">{{ user }}</li>
+                <li v-if="users.length == 0" style="background-color: red;">No one else is Connected</li>
             </ul>
         </div>
         <div id="chat">
-            <h1 id="recipient">{{ recipient || 'Select a user to chat with' }}</h1>
+            <h1 id="recipient" v-if="recipient">{{ recipient }}</h1>
+            <h1 id="recipient" v-else style="color:#e90000;">Select a user to chat with</h1>
             <div id="messages">
-                <div v-for="message in messages" :key="message.text">
+                <button v-if="recipient && !handshaked.includes(recipient)" @click="initializeHandshake()" id="initHandshake">Initialize handshake</button>
+                <div v-else-if="(messages.filter(msg => (msg.from == recipient || msg.to == nickname) || msg.to == recipient).length == 0) && recipient">
+                    <p style="text-align: center;">No messages yet.</p>
+                </div>
+                <div v-for="message in messages" :key="message.text" v-if="recipient">
                     <p :byMe="message.sender != recipient" v-if="message.from == recipient || message.to == nickname">{{ message.text }}</p>
                 </div>
             </div>
 
-            <div id="message_box">
+            <div id="message_box" v-if="recipient && handshaked.includes(recipient)">
                 <input type="text" id="message_input" placeholder="Type your message here..." v-model="newMessage" @keyup.enter="sendMessage" :disabled="!recipient">
                 <button id="send_button" @click="sendMessage" :disabled="!recipient || newMessage.trim() == ''">Send</button>
             </div>

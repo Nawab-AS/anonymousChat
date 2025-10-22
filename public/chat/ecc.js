@@ -1,9 +1,10 @@
 // ECC (Elliptic Curve Cryptography) implementation
+// partially made with the help of AI
 
 
 class ECC {
     #privateKey;
-    #keyRing = new Map();
+    #keyRing = {};
 
     constructor(curveParams, privateKey) {
         /* curve params:
@@ -96,77 +97,80 @@ class ECC {
     }
 
 
-    async #setAESKey(name, sharedKey) {
-        const sharedKeyHex = sharedKey.x.toString(16).padStart(32, '0'); // Convert to hexadecimal
-        const sharedSecretBytes = new Uint8Array(16);
+    async #saveAESKey(name, sharedKey) {
+        const sharedKeyHex = sharedKey.x.toString(16).padStart(16, '0'); // Convert to hexadecimal
+        const sharedBytes = new Uint8Array(16);
 
-        for (let i = 0; i < 32; i++) {
-            sharedSecretBytes[i] = parseInt(sharedKeyHex.substring(i * 2, i * 2 + 2), 16);
+        // convert to Uint8Array
+        for (let i = 0; i < 16; i++) {
+            sharedBytes[i] = parseInt(sharedKeyHex.slice(i * 2, i * 2 + 2), 16);
         }
 
-        const ephemeralKey = await crypto.subtle.importKey(
-            'raw',
-            sharedSecretBytes,
-            'ECDH',
-            true,
-            ['deriveKey']
+        // create AES-128 hash
+        const hashBuffer = (await window.crypto.subtle.digest('SHA-256', sharedBytes)).slice(0, 16);
+
+        const AES_Key = await window.crypto.subtle.importKey(
+            'raw', 
+            hashBuffer,
+            { name: "AES-GCM", length: 128 },
+            false,
+            ["encrypt", "decrypt"]
         );
 
-        const AES_Key = await crypto.subtle.deriveKey(
-            { name: 'ECDH', public: sharedKey },
-            this.#privateKey,
-            { name: 'AES-GCM', length: 128 },
-            true,
-            ['encrypt', 'decrypt']
-        );
-
-        this.#keyRing.set(name, AES_Key);
+        this.#keyRing[name] = AES_Key;
     }
 
 
     getPublicKey() {
-        return this.#scalarMultiply(this.#privateKey, this.curveParams.G);
+        const publicKey = this.#scalarMultiply(this.#privateKey, this.curveParams.G);
+        return { x: publicKey.x.toString(), y: publicKey.y.toString() }
     }
 
-    getSharedSecret(otherPublicKey, name) {
-        const sharedKey = this.#scalarMultiply(this.#privateKey, otherPublicKey);
-        this.#setAESKey(name, sharedKey);
-        return sharedKey;
+    deriveSharedSecret(otherPublicKey, name) {
+        otherPublicKey = { x: BigInt(otherPublicKey.x), y: BigInt(otherPublicKey.y) };
+        let sharedKey;
+        try {
+            sharedKey = this.#scalarMultiply(this.#privateKey, otherPublicKey);
+        } catch (error) {
+            return false
+        }
+        this.#saveAESKey(name, sharedKey);
+        return true;
     }
 
-    async encryptMessage(message, name) {
-        const sharedKey = this.#keyRing.get(name);
+    async encryptMessage(plaintext, name) {
+        const sharedKey = this.#keyRing[name];
         if (!sharedKey) throw new Error("Shared key not found");
 
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const encodedText = new TextEncoder().encode(message);
+        const iv = crypto.getRandomValues(new Uint8Array(16));
+        const encodedText = new TextEncoder().encode(plaintext);
 
-        const ciphertext = await crypto.subtle.encrypt(
+        const encryptedBuffer = await crypto.subtle.encrypt(
             { name: 'AES-GCM', iv: iv },
             sharedKey,
             encodedText
         );
 
-        const result = new Uint8Array(iv.length + ciphertext.byteLength);
-        result.set(iv);
-        result.set(new Uint8Array(ciphertext), iv.length);
-        return result;  
+        console.log("encrypted message:", encryptedBuffer, "\n\niv:", iv);
+        return { buffer: encryptedBuffer, iv };
     }
 
 
     async decryptMessage(encryptedMessage, name) {
-        const sharedKey = this.#keyRing.get(name);
+        const sharedKey = this.#keyRing[name];
         if (!sharedKey) throw new Error("Shared key not found");
 
-        const iv = encryptedMessage.slice(0, 12);
-        const ciphertext = encryptedMessage.slice(12);
+        if (!encryptedMessage) return;
 
-        const decrypted = await crypto.subtle.decrypt(
-            { name: 'AES-GCM', iv: iv },
-            sharedKey,
-            ciphertext
-        );
-
-        return new TextDecoder().decode(decrypted);
+        try {
+            const decryptedBuffer = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: encryptedMessage.iv },
+                sharedKey,
+                encryptedMessage.buffer
+            );
+            return { status: "OK", decryptedText: (new TextDecoder().decode(decryptedBuffer))};
+        } catch (error) {
+            return { status: "ERROR", error };
+        }
     }
 }
