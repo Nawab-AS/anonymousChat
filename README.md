@@ -2,6 +2,9 @@
 
 An omegle style anonymous chat app that uses a PoC ECC key transfer.
 
+**Acknowledgement**: /public/chat/ecc.js was partially created with the help of AI.
+All other files are handmade (~90%)
+
 
 ## Live Demo
 
@@ -41,8 +44,8 @@ A valid ECC curve must contain the folowing:
 - a: curve coefficient #1 (bigInt)
 - b: curve coefficient #2 (bigInt)
 - G: base/generator point (Object)
-    - x: x position of generator (bigInt)
-    - y: y position of generator (bigInt)
+    - x: x position of generator point (bigInt)
+    - y: y position of generator point (bigInt)
 - n: order of the base point (bigInt)
 
 > [!CAUTION]
@@ -57,4 +60,8 @@ as shown [here](#Usage).
 
 Backend: express.js + socket.io
 
-render engine: EJS + Vue.js
+render engine: EJS + client-side Vue.js
+
+
+## Contributing
+Contributions and bug reports are welcome. Open a PR or issue in the repository. Keep changes small and documented.
